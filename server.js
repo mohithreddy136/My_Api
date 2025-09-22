@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { Low } from "lowdb";
-import { JSONFile } from "lowdb/node.js";
+import { JSONFile } from "lowdb/node";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
