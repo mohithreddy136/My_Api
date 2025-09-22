@@ -17,19 +17,20 @@ await db.read();
 db.data ||= { users: [] };
 await db.write();
 
-// CREATE user with ID in URL
-app.post("/users/:id", async (req, res) => {
-  await db.read();
-  const userId = req.params.id;
-
-  // Check if ID already exists
-  const existing = db.data.users.find(u => u.id === userId);
-  if (existing) {
-    return res.status(400).json({ error: "ID already exists" });
+// Function to find the smallest available ID
+const getNextId = () => {
+  const usedIds = db.data.users.map(u => u.id);
+  let id = 1;
+  while (usedIds.includes(id)) {
+    id++;
   }
+  return id;
+};
 
-  // Create new user
-  const newUser = { id: userId, name: req.body.name, email: req.body.email };
+// CREATE user (auto ID)
+app.post("/users", async (req, res) => {
+  await db.read();
+  const newUser = { id: getNextId(), name: req.body.name, email: req.body.email };
   db.data.users.push(newUser);
   await db.write();
   res.status(201).json(newUser);
@@ -41,18 +42,18 @@ app.get("/users", async (req, res) => {
   res.json(db.data.users);
 });
 
-// READ single user by ID
+// READ single user
 app.get("/users/:id", async (req, res) => {
   await db.read();
-  const user = db.data.users.find(u => u.id === req.params.id);
+  const user = db.data.users.find(u => u.id == req.params.id);
   if (!user) return res.status(404).send("User not found");
   res.json(user);
 });
 
-// UPDATE user by ID
+// UPDATE user
 app.put("/users/:id", async (req, res) => {
   await db.read();
-  const user = db.data.users.find(u => u.id === req.params.id);
+  const user = db.data.users.find(u => u.id == req.params.id);
   if (!user) return res.status(404).send("User not found");
 
   user.name = req.body.name ?? user.name;
@@ -61,22 +62,23 @@ app.put("/users/:id", async (req, res) => {
   res.json(user);
 });
 
-// DELETE user by ID
+// DELETE user
 app.delete("/users/:id", async (req, res) => {
   await db.read();
   const prevLength = db.data.users.length;
-  db.data.users = db.data.users.filter(u => u.id !== req.params.id);
-  await db.write();
+  db.data.users = db.data.users.filter(u => u.id != req.params.id);
 
   if (db.data.users.length === prevLength) {
     return res.status(404).send("User not found");
   }
+
+  await db.write();
   res.sendStatus(204);
 });
 
 // Root
 app.get("/", (req, res) => {
-  res.send("✅ CRUD API is running! Use /users endpoints.");
+  res.send("✅ CRUD API running! Use /users endpoint.");
 });
 
 // Start server
