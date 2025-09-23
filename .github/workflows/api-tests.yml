@@ -1,0 +1,43 @@
+name: API Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  run-newman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install Newman and reporters
+      run: |
+        npm install -g newman
+        npm install -g newman-reporter-htmlextra
+        npm install -g newman-reporter-junitfull
+
+    - name: Create reports folder
+      run: mkdir -p reports
+
+    - name: Run Postman collection via Newman
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        newman run newman-config.yml \
+          --reporter-htmlextra-export "reports/newman_report_$TIMESTAMP.html" \
+          --reporter-junitfull-export "reports/newman_report_$TIMESTAMP.xml" \
+          --insecure
+
+    - name: Upload reports as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: newman-reports
+        path: reports/

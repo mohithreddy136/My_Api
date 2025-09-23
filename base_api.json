@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "7c139587-564e-4e53-8282-6777637f5801",
+		"name": "api_working",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48599918",
+		"_collection_link": "https://pnmohithreddy-9013714.postman.co/workspace/P-N-MOHITH-REDDY's-Workspace~30818c02-0d57-4be1-8ca1-6650791283d5/collection/48599918-7c139587-564e-4e53-8282-6777637f5801?action=share&source=collection_link&creator=48599918"
+	},
+	"item": [
+		{
+			"name": "get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://my-api-h9z0.onrender.com/users",
+					"protocol": "https",
+					"host": [
+						"my-api-h9z0",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							" \r",
+							"pm.test(\"Response time is less than 2000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							" \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"mohith\",\r\n    \"email\":\"mohith@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://my-api-h9z0.onrender.com/users",
+					"protocol": "https",
+					"host": [
+						"my-api-h9z0",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
