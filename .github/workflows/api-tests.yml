@@ -31,7 +31,8 @@ jobs:
     - name: Run Postman collection via Newman
       run: |
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        newman run newman-config.yml \
+        newman run base_api.json \
+          --reporters cli,htmlextra,junitfull \
           --reporter-htmlextra-export "reports/newman_report_$TIMESTAMP.html" \
           --reporter-junitfull-export "reports/newman_report_$TIMESTAMP.xml" \
           --insecure
